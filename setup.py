@@ -33,23 +33,25 @@ def unsquashIso():
     if type(_cpVmlinuz) == Error:
         sys.exit(1)
     _chrootPacmanInit = executeBashCommand(
-        'arch-chroot squashfs-root /bin/bash pacman-key --init')
+        'arch-chroot squashfs-root pacman-key --init')
     if type(_chrootPacmanInit) == Error:
         sys.exit(1)
     _chrootPacmanPop = executeBashCommand(
-        'arch-chroot squashfs-root /bin/bash pacman-key --populate archlinux')
+        'arch-chroot squashfs-root pacman-key --populate archlinux')
     if type(_chrootPacmanPop) == Error:
         sys.exit(1)
     executeBashCommand(
-        'arch-chroot squashfs-root pacman -Syu --force archiso linux lxdm')
+        'arch-chroot squashfs-root pacman -Syu --force archiso linux lxdm ttf-dejavu xfce4 base-devel'
+    )
     executeBashCommand(
-        'arch-chroot squashfs-root pacman -S --force ttf-dejavu')
+        'cp -fv ../../../.configs/etc/mkinitcpio.conf squashfs-root/etc/mkinitcpio.conf'
+    )
+    executeBashCommand('arch-chroot squashfs-root mkinitcpio -p linux')
     executeBashCommand(
-        'arch-chroot squashfs-root pacman -S --force xfce4')
+        'cp -fv ../../../.configs/etc/lxdm.conf squashfs-root/etc/lxdm/lxdm.conf')
     executeBashCommand(
-        'arch-chroot squashfs-root pacman -S --force base-devel')
-    executeBashCommand(
-        'arch-chroot squashfs-root userdel -f installer')
+        'cp -fv ../../../.configs/etc/sudoers squashfs-root/etc/sudoers')
+    executeBashCommand('arch-chroot squashfs-root userdel -f installer')
     executeBashCommand(
         'arch-chroot squashfs-root useradd -m -s /bin/bash installer')
     executeBashCommand(
@@ -57,12 +59,9 @@ def unsquashIso():
     executeBashCommand(
         'arch-chroot squashfs-root chown -Rf installer:users /yay')
     executeBashCommand(
-        'cp -fv ../../../.configs/etc/sudoers squashfs-root/etc/sudoers')
-    executeBashCommand(
         'cp -fv ../../../.configs/bin/install-yay squashfs-root/bin/install-yay'
     )
-    executeBashCommand(
-        'arch-chroot squashfs-root chmod +x /bin/install-yay')
+    executeBashCommand('arch-chroot squashfs-root chmod +x /bin/install-yay')
     executeBashCommand(
         'arch-chroot squashfs-root chown -Rf installer:users /bin/install-yay')
     executeBashCommand(
@@ -72,43 +71,36 @@ def unsquashIso():
     )
     executeBashCommand(
         'arch-chroot squashfs-root sudo -u installer yay -S tor-browser')
-    executeBashCommand(
-        'arch-chroot squashfs-root userdel -f installer')
-    executeBashCommand(
-        'arch-chroot squashfs-root useradd -m -s /bin/bash -G immu immu')
-    executeBashCommand(
-        'cp -fv ../../../.configs/etc/mkinitcpio.conf squashfs-root/etc/mkinitcpio.conf'
-    )
-    executeBashCommand(
-        'cp -fv ../../../.configs/etc/lxdm.conf squashfs-root/etc/lxdm.conf')
-    executeBashCommand('arch-chroot squashfs-root mkinitcpio -p linux')
+    executeBashCommand('arch-chroot squashfs-root userdel -f installer')
     executeBashCommand(
         'cp -v ../../../.configs/bin/pkglist squashfs-root/bin/pkglist')
+    executeBashCommand(
+        'arch-chroot squashfs-root useradd -m -s /bin/bash -G video,audio immu')
     executeBashCommand('arch-chroot squashfs-root pkglist')
+    executeBashCommand('arch-chroot squashfs-root pacman -Scc')
     executeBashCommand(
         'arch-chroot squashfs-root systemctl disable multi-user.target')
     executeBashCommand(
         'arch-chroot squashfs-root systemctl enable graphical.target')
     executeBashCommand('arch-chroot squashfs-root systemctl enable lxdm')
-    executeBashCommand('arch-chroot squashfs-root pacman -Scc')
     executeBashCommand(
         'mv -v squashfs-root/boot/vmlinuz-linux ../boot/x86_64/vmlinuz')
     executeBashCommand(
         'mv -v squashfs-root/boot/initramfs-linux.img ../boot/x86_64/archiso.img'
     )
+    executeBashCommand('rm squashfs-root/boot/initramfs-linux-fallback.img')
     executeBashCommand('mv -v squashfs-root/pkglist.txt ../pkglist.x86_64.txt')
     executeBashCommand('rm airootfs.sfs')
     executeBashCommand('mksquashfs squashfs-root airootfs.sfs')
+    executeBashCommand('rm -r squashfs-root')
     executeBashCommand('sha512sum airootfs.sfs > airootfs.sha512')
-    if not resume:
-        executeBashCommand(
-            'rm squashfs-root/boot/initramfs-linux-fallback.img')
-        executeBashCommand('rm -r squashfs-root')
 
 
 def genIso():
     os.chdir('../../')
+    executeBashCommand(
+        "genisoimage -l -r -J -V %s -b isolinux/isolinux.bin -no-emul-boot -boot-load-size 4 -boot-info-table -c isolinux/boot.cat -o ../out/immu-arch-custom.iso ./"
+        % (config['isoLabel']))
     # executeBashCommand(
-    #     "genisoimage -l -r -J -V %s -b isolinux/isolinux.bin -no-emul-boot -boot-load-size 4 -boot-info-table -c isolinux/boot.cat -o ../out/immu-arch-custom.iso ./"
+    #     'xorriso -as mkisofs -iso-level 3 -full-iso9660-filenames -volid %s -eltorito-boot isolinux/isolinux.bin -eltorito-catalog isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -isohybrid-mbr ~/customiso/isolinux/isohdpfx.bin -output ../out/immu-arch-custom.iso ../../../'
     #     % (config['isoLabel']))
-    executeBashCommand('xorriso -as mkisofs -iso-level 3 -full-iso9660-filenames -volid %s -eltorito-boot isolinux/isolinux.bin -eltorito-catalog isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -isohybrid-mbr ~/customiso/isolinux/isohdpfx.bin -output ../out/immu-arch-custom.iso ../../../' % (config['isoLabel']))
