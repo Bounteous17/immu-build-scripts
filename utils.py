@@ -40,6 +40,13 @@ def consoleLog(__str, __type):
 config = __config()
 
 shortConfig = {
-    "urlPathIso": config['urlMirrorIso'] + config['urlArchIso'],
-    "archIsoFileName": config['urlArchIso'].split('/')[-1]
+    "urlPathIso":
+    config['urlMirrorIso'] + config['urlArchIso'],
+    "archIsoFileName":
+    config['urlArchIso'].split('/')[-1],
+    "isoPath":
+    config['downloadsFolder'] + '/' + config['urlArchIso'].split('/')[-1]
 }
+
+# If resume is enabled you can resume operations (recommended only for development)
+resume = False

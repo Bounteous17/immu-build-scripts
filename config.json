@@ -1,6 +1,12 @@
 {
+  "_comments": {
+    "isoLabel": "genisoimage -l -r -J -V 'ARCH_201209' -b isolinux/isolinux.bin -no-emul-boot -boot-load-size 4 -boot-info-table -c isolinux/boot.cat -o ../immu-arch-custom.iso ./"
+  },
   "urlMirrorIso": "http://mirrors.evowise.com",
-  "urlArchIso": "/archlinux/iso/2019.07.01/archlinux-2019.07.01-x86_64.iso",
-  "sha1Iso": "f4d5fe8d7da2fca505c49b86b4e76d3392d90d13",
-  "downloadsFolder": ".downloads"
+  "urlArchIso": "/archlinux/iso/2019.09.01/archlinux-2019.09.01-x86_64.iso",
+  "sha1Iso": "67cf5460beb42230a9c07fd6ebc136cbb1181948",
+  "downloadsFolder": ".downloads",
+  "mountIso": ".mnt/archiso",
+  "pathCustomIso": ".customiso",
+  "isoLabel": "ARCH_201909"
 }

@@ -1,6 +1,6 @@
 import sys
 from tools import calculateFileSha1sum
-from utils import shortConfig, config, consoleLog
+from utils import shortConfig, config, consoleLog, resume
 
 
 def verifyIso():

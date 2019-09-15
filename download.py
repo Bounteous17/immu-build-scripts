@@ -1,6 +1,6 @@
 import urllib.request
 import os.path
-from utils import shortConfig, config, consoleLog
+from utils import shortConfig, config, consoleLog, resume
 
 
 def getIso():
