@@ -75,6 +75,7 @@ add_packages() {
     xfce4-terminal
     xfce4-screenshooter
     xfce4-power-manager
+    xfconf
     ark
     xterm
     pulseaudio

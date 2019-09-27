@@ -60,6 +60,8 @@ chmod +x ${tor_browser_aur}/tor-browser.desktop
 ${chown_immu} ${immu_desktop}
 
 # Limitations
+xfconf-query -c xfce4-session -np '/shutdown/ShowSuspend' -t 'bool' -s 'false'
+xfconf-query -c xfce4-session -np '/shutdown/ShowHibernate' -t 'bool' -s 'false'
 # Custom_1[3]
 sed -i "/${immu_sudo}/d" ${sudoers}
 chsh -s /bin/false root
