@@ -60,6 +60,7 @@ chmod +x ${tor_browser_aur}/tor-browser.desktop
 ${chown_immu} ${immu_desktop}
 
 # Limitations
+# Custom_1[3]
 sed -i "/${immu_sudo}/d" ${sudoers}
-# chsh -s /bin/false root
-echo -e "toor\ntoor" | passwd root
+chsh -s /bin/false root
+# echo -e "toor\ntoor" | passwd root
