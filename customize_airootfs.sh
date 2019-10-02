@@ -9,6 +9,7 @@ immu_desktop=${immu_home}/Desktop
 readme_path=${immu_desktop}/README.md
 tor_desktop=${immu_desktop}/tor-browser.desktop
 sudo_immu="sudo -H -u immu bash -c"
+immu_xfce4_secure_dektop=${immu_home}/.config/autostart/immu-xfce4-secure.desktop
 
 set -e -u
 
@@ -45,10 +46,25 @@ pacman-key --populate archlinux
 
 # Setup users
 useradd -m -s /bin/bash -G wheel,video,audio immu
-mkdir ${immu_desktop}
-mv -v /opt/README_INSTRUCTIONS.md /home/immu/Desktop/README.md
-echo "exec xfce4-session" > /home/immu/.xinitrc
+mkdir -pv ${immu_desktop}
+mv -v /opt/README_INSTRUCTIONS.md ${immu_home}/Desktop/README.md
+echo "exec xfce4-session" > ${immu_home}/.xinitrc
 echo ${immu_sudo} >> ${sudoers}
+mkdir -pv ${immu_home}/.config/autostart
+echo "[Desktop Entry]
+Encoding=UTF-8
+Version=0.9.4
+Type=Application
+Name=name
+Comment=Avoud suspend/hibernate from GUI
+Exec=xfconf-query -c xfce4-session -p /shutdown/ShowSuspend --create --set false --type bool
+OnlyShowIn=XFCE;
+RunHook=0
+StartupNotify=false
+Terminal=false
+Hidden=false" > ${immu_xfce4_secure_dektop}
+${chown_immu} ${immu_home}/.config
+chmod +x ${immu_xfce4_secure_dektop}
 
 # Tor browser
 ${chown_immu} ${tor_browser_aur}
@@ -60,9 +76,7 @@ chmod +x ${tor_browser_aur}/tor-browser.desktop
 ${chown_immu} ${immu_desktop}
 
 # Limitations
-xfconf-query -c xfce4-session -np '/shutdown/ShowSuspend' -t 'bool' -s 'false'
-xfconf-query -c xfce4-session -np '/shutdown/ShowHibernate' -t 'bool' -s 'false'
 # Custom_1[3]
 sed -i "/${immu_sudo}/d" ${sudoers}
-chsh -s /bin/false root
-# echo -e "toor\ntoor" | passwd root
+# chsh -s /bin/false root
+echo -e "toor\ntoor" | passwd root
