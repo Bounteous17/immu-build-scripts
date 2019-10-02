@@ -27,7 +27,7 @@ MANIFEST
 .customiso
 .downloads/*
 .mnt/*
-out/*
+out/
 .archlive/
 .archiso/
 # PyInstaller
