@@ -5,8 +5,9 @@ set -e -u
 iso_publisher_author=https://github.com/bounteous
 iso_name=immulinux
 iso_label="IMMU_$(date +%Y%m)"
+syslinux_label_title="Immu Linux"
 iso_publisher="Immu Linux <https://github.com/bounteous/immu-build-scripts>"
-iso_application="Immu Linux Live/Rescue CD"
+iso_application="Immu Linux Live CD"
 iso_version=$(date +%Y.%m.%d)
 install_dir=arch
 work_dir=work
@@ -77,6 +78,11 @@ add_packages() {
     xfce4-power-manager
     xfconf
     ark
+    p7zip
+    unrar
+    unarchiver
+    lzop
+    lrzip
     xterm
     pulseaudio
     pulseaudio-alsa
@@ -133,6 +139,7 @@ make_customize_airootfs() {
     
     lynx -dump -nolist 'https://wiki.archlinux.org/index.php/Installation_Guide?action=render' >> ${work_dir}/x86_64/airootfs/root/install.txt
     cp ../customize_airootfs.sh ${work_dir}/x86_64/airootfs/root/customize_airootfs.sh
+    chmod +x ${work_dir}/x86_64/airootfs/root/customize_airootfs.sh
     mkarchiso ${verbose} -w "${work_dir}/x86_64" -C "${work_dir}/pacman.conf" -D "${install_dir}" -r '/root/customize_airootfs.sh' run
     rm ${work_dir}/x86_64/airootfs/root/customize_airootfs.sh
 }
@@ -160,6 +167,7 @@ make_syslinux() {
     mkdir -p ${work_dir}/iso/${install_dir}/boot/syslinux
     for _cfg in ${script_path}/syslinux/*.cfg; do
         sed "s|%ARCHISO_LABEL%|${iso_label}|g;
+        s|Arch Linux|${syslinux_label_title}|g;
         s|%INSTALL_DIR%|${install_dir}|g" ${_cfg} > ${work_dir}/iso/${install_dir}/boot/syslinux/${_cfg##*/}
     done
     cp ${configs_path}/splash.png ${work_dir}/iso/${install_dir}/boot/syslinux
