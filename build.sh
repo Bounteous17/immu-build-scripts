@@ -8,7 +8,7 @@ iso_label="IMMU_$(date +%Y%m)"
 syslinux_label_title="Immu Linux"
 iso_publisher="Immu Linux <https://github.com/bounteous/immu-build-scripts>"
 iso_application="Immu Linux Live CD"
-iso_version=$(date +%Y.%m.%d)
+iso_version=alpha-$(date +%Y.%m.%d)
 install_dir=arch
 work_dir=work
 out_dir=../out
@@ -70,27 +70,7 @@ make_basefs() {
 }
 
 add_packages() {
-    echo "xorg-server
-    slim
-    xfce4
-    xfce4-terminal
-    xfce4-screenshooter
-    xfce4-power-manager
-    xfconf
-    ark
-    p7zip
-    unrar
-    unarchiver
-    lzop
-    lrzip
-    xterm
-    pulseaudio
-    pulseaudio-alsa
-    pavucontrol
-    networkmanager
-    nm-connection-editor
-    network-manager-applet
-    base-devel" >> packages.x86_64
+    cp -rfv ${configs_path}/packages.x86_64 .
 }
 
 # Additional packages (airootfs)
@@ -123,7 +103,7 @@ make_setup_mkinitcpio() {
         gpg --export ${gpg_key} >${work_dir}/gpgkey
         exec 17<>${work_dir}/gpgkey
     fi
-    ARCHISO_GNUPG_FD=${gpg_key:+17} mkarchiso ${verbose} -w "${work_dir}/x86_64" -C "${work_dir}/pacman.conf" -D "${install_dir}" -r 'mkinitcpio -c /etc/mkinitcpio-archiso.conf -k /boot/vmlinuz-linux -g /boot/archiso.img' run
+    ARCHISO_GNUPG_FD=${gpg_key:+17} mkarchiso ${verbose} -w "${work_dir}/x86_64" -C "${work_dir}/pacman.conf" -D "${install_dir}" -r 'mkinitcpio -c /etc/mkinitcpio-archiso.conf -k /boot/vmlinuz-linux-hardened -g /boot/archiso.img' run
     if [[ ${gpg_key} ]]; then
         exec 17<&-
     fi
@@ -137,7 +117,6 @@ make_customize_airootfs() {
     
     curl -o ${work_dir}/x86_64/airootfs/etc/pacman.d/mirrorlist 'https://www.archlinux.org/mirrorlist/?country=all&protocol=http&use_mirror_status=on'
     
-    lynx -dump -nolist 'https://wiki.archlinux.org/index.php/Installation_Guide?action=render' >> ${work_dir}/x86_64/airootfs/root/install.txt
     cp ../customize_airootfs.sh ${work_dir}/x86_64/airootfs/root/customize_airootfs.sh
     chmod +x ${work_dir}/x86_64/airootfs/root/customize_airootfs.sh
     mkarchiso ${verbose} -w "${work_dir}/x86_64" -C "${work_dir}/pacman.conf" -D "${install_dir}" -r '/root/customize_airootfs.sh' run
@@ -148,7 +127,7 @@ make_customize_airootfs() {
 make_boot() {
     mkdir -p ${work_dir}/iso/${install_dir}/boot/x86_64
     cp ${work_dir}/x86_64/airootfs/boot/archiso.img ${work_dir}/iso/${install_dir}/boot/x86_64/archiso.img
-    cp ${work_dir}/x86_64/airootfs/boot/vmlinuz-linux ${work_dir}/iso/${install_dir}/boot/x86_64/vmlinuz
+    cp ${work_dir}/x86_64/airootfs/boot/vmlinuz-linux-hardened ${work_dir}/iso/${install_dir}/boot/x86_64/vmlinuz-hardened
 }
 
 # Add other aditional/extra files to ${install_dir}/boot/
@@ -163,11 +142,12 @@ make_boot_extra() {
 
 # Prepare /${install_dir}/boot/syslinux
 make_syslinux() {
-    _uname_r=$(file -b ${work_dir}/x86_64/airootfs/boot/vmlinuz-linux| awk 'f{print;f=0} /version/{f=1}' RS=' ')
+    _uname_r=$(file -b ${work_dir}/x86_64/airootfs/boot/vmlinuz-linux-hardened| awk 'f{print;f=0} /version/{f=1}' RS=' ')
     mkdir -p ${work_dir}/iso/${install_dir}/boot/syslinux
     for _cfg in ${script_path}/syslinux/*.cfg; do
         sed "s|%ARCHISO_LABEL%|${iso_label}|g;
         s|Arch Linux|${syslinux_label_title}|g;
+        s|vmlinuz|vmlinuz-hardened|g;
         s|%INSTALL_DIR%|${install_dir}|g" ${_cfg} > ${work_dir}/iso/${install_dir}/boot/syslinux/${_cfg##*/}
     done
     cp ${configs_path}/splash.png ${work_dir}/iso/${install_dir}/boot/syslinux
@@ -202,6 +182,8 @@ make_efi() {
     cp ${script_path}/efiboot/loader/entries/uefi-shell-v1-x86_64.conf ${work_dir}/iso/loader/entries/
     
     sed "s|%ARCHISO_LABEL%|${iso_label}|g;
+    s|Arch Linux|${syslinux_label_title}|g;
+    s|vmlinuz|vmlinuz-hardened|g;
     s|%INSTALL_DIR%|${install_dir}|g" \
     ${script_path}/efiboot/loader/entries/archiso-x86_64-usb.conf > ${work_dir}/iso/loader/entries/archiso-x86_64.conf
     
@@ -221,7 +203,7 @@ make_efiboot() {
     mount ${work_dir}/iso/EFI/archiso/efiboot.img ${work_dir}/efiboot
     
     mkdir -p ${work_dir}/efiboot/EFI/archiso
-    cp ${work_dir}/iso/${install_dir}/boot/x86_64/vmlinuz ${work_dir}/efiboot/EFI/archiso/vmlinuz.efi
+    cp ${work_dir}/iso/${install_dir}/boot/x86_64/vmlinuz-hardened ${work_dir}/efiboot/EFI/archiso/vmlinuz-hardened.efi
     cp ${work_dir}/iso/${install_dir}/boot/x86_64/archiso.img ${work_dir}/efiboot/EFI/archiso/archiso.img
     
     cp ${work_dir}/iso/${install_dir}/boot/intel_ucode.img ${work_dir}/efiboot/EFI/archiso/intel_ucode.img
@@ -239,6 +221,8 @@ make_efiboot() {
     cp ${script_path}/efiboot/loader/entries/uefi-shell-v1-x86_64.conf ${work_dir}/efiboot/loader/entries/
     
     sed "s|%ARCHISO_LABEL%|${iso_label}|g;
+    s|Arch Linux|${syslinux_label_title}|g;
+    s|vmlinuz|vmlinuz-hardened|g;
     s|%INSTALL_DIR%|${install_dir}|g" \
     ${script_path}/efiboot/loader/entries/archiso-x86_64-cd.conf > ${work_dir}/efiboot/loader/entries/archiso-x86_64.conf
     
