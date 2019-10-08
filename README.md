@@ -20,6 +20,9 @@ The objective of this live ISO is to facilitate the use to users who wish to nav
 
 ## Tips and features
 
+The linux kernel image chosen by default is linux-hardened. It's a security-focused Linux kernel applying a set of hardening patches to mitigate kernel and userspace exploits. It also enables more upstream kernel hardening features than linux.
+(https://wiki.archlinux.org/index.php/Kernel#Officially_supported_kernels)
+
 The system time is set from the time that is set in the hardware of the equipment, usually from the BIOS. The **timedatectl** package is responsible for setting the date and time in the system. Be sure to **set the correct** time for your system so as not to compromise your system.
 (https://wiki.archlinux.org/index.php/System_time#Hardware_clock)
 
