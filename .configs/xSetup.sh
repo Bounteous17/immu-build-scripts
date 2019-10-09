@@ -55,7 +55,7 @@ ask_keymap() {
     wprintf '[?] Make a choice: '
     read keymap_opt
     contains "1 2" "$keymap_opt"
-    if [ "$?" = 1 ]
+    if [ "$?" = "1" ]
     then
         err "Unknow option $keymap_opt"
     elif [ "$keymap_opt" = "2" ]
@@ -80,7 +80,7 @@ ask_macspoof() {
     wprintf '[?] Make a choice: '
     read spoof_opt
     contains "1 2" "$spoof_opt"
-    if [ "$?" = 1 ]
+    if [ "$?" = "1" ]
     then
         err "Unknow option $spoof_opt"
     elif [ "$spoof_opt" = "2" ]

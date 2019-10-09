@@ -70,7 +70,8 @@ make_basefs() {
 }
 
 add_packages() {
-    cp -rfv ${configs_path}/packages.x86_64 .
+    cp -rvf ${configs_path}/packages.x86_64 .
+    cp -rvf ${configs_path}/xSetup.sh ${work_dir}/x86_64/airootfs/opt
 }
 
 # Additional packages (airootfs)

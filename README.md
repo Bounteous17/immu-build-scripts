@@ -53,6 +53,8 @@ and go ahead.
 
 The final Iso file will be generated within the "**out/**" directory.
 
+![Screenshot_20191009_222745](https://user-images.githubusercontent.com/16175933/66517870-37bbac00-eae4-11e9-8155-ea492750e406.png)
+
 ## Get Involved
 
 You can get in touch with the Immu Linux team. 

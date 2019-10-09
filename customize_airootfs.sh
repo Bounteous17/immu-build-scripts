@@ -10,6 +10,7 @@ readme_path=${immu_desktop}/README.md
 tor_desktop=${immu_desktop}/tor-browser.desktop
 sudo_immu="sudo -H -u immu bash -c"
 immu_xfce4_secure_dektop=${immu_home}/.config/autostart/immu-xfce4-secure.desktop
+immu_system_secure_setup=${immu_home}/.config/autostart/immu-system-secure-setup.desktop
 
 set -e -u
 
@@ -56,15 +57,34 @@ Encoding=UTF-8
 Version=0.9.4
 Type=Application
 Name=name
-Comment=Avoud suspend/hibernate from GUI
+Comment=Avoid suspend/hibernate from GUI
 Exec=xfconf-query -c xfce4-session -p /shutdown/ShowSuspend --create --set false --type bool
 OnlyShowIn=XFCE;
 RunHook=0
 StartupNotify=false
 Terminal=false
 Hidden=false" > ${immu_xfce4_secure_dektop}
-${chown_immu} ${immu_home}/.config
 chmod +x ${immu_xfce4_secure_dektop}
+
+mkdir ${immu_home}/.immu
+mv -v /opt/xSetup.sh ${immu_home}/.immu
+chmod +x ${immu_home}/.immu/xSetup.sh
+${chown_immu} ${immu_home}/.immu
+echo "[Desktop Entry]
+Encoding=UTF-8
+Version=0.9.4
+Type=Application
+Name=name
+Comment=Secure tor surfing setup
+Exec=xfce4-terminal -x ${immu_home}/.immu/xSetup.sh
+OnlyShowIn=XFCE;
+RunHook=0
+StartupNotify=false
+Terminal=false
+Hidden=false" > ${immu_system_secure_setup}
+chmod +x ${immu_system_secure_setup}
+
+${chown_immu} ${immu_home}/.config
 
 # Tor browser
 ${chown_immu} ${tor_browser_aur}
@@ -78,5 +98,5 @@ ${chown_immu} ${immu_desktop}
 # Limitations
 # Custom_1[3]
 sed -i "/${immu_sudo}/d" ${sudoers}
-# chsh -s /bin/false root
-echo -e "toor\ntoor" | passwd root
+chsh -s /bin/false root
+# echo -e "toor\ntoor" | passwd root
