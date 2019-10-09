@@ -17,6 +17,7 @@ BLINK="$(tput blink)"
 NC="$(tput sgr0)"
 
 KEYMAP_INPUT="us"
+SPOOF_MAC=0
 # return codes
 SUCCESS=0
 FAILURE=1
@@ -68,9 +69,37 @@ set_keymap() {
     printf "\nInsert keymap layout [us]: "
     read KEYMAP_INPUT
     setxkbmap $KEYMAP_INPUT
+	clear
 }
 
+ask_macspoof() {
+    wprintf '[+] MAC address changer:'
+    printf "\n
+1. Skip spoofing
+2. Spoof MAC address\n\n"
+    wprintf '[?] Make a choice: '
+    read spoof_opt
+    contains "1 2" "$spoof_opt"
+    if [ "$?" = 1 ]
+    then
+        err "Unknow option $spoof_opt"
+    elif [ "$spoof_opt" = "2" ]
+    then
+        SPOOF_MAC=1
+    fi
+}
 
+spoof_mac() {
+	if [ "$SPOOF_MAC" = "1" ] 
+	then
+		printf "\nInsert network interface name: "
+		read _interface
+		macchanger -r $_interface
+		read -p "Press enter to continue"
+	fi
+}
 
 ask_keymap
 set_keymap
+ask_macspoof
+spoof_mac
