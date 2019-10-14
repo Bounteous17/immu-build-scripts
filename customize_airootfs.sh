@@ -2,6 +2,7 @@
 slim_conf=/etc/slim.conf
 tor_browser_aur=/opt/tor-browser-aur
 immu_sudo="immu ALL=(ALL) NOPASSWD:ALL"
+immu_sudo_ask="immu ALL=(ALL) ALL"
 sudoers=/etc/sudoers
 chown_immu="chown -R immu:immu"
 immu_home=/home/immu
@@ -54,7 +55,7 @@ echo ${immu_sudo} >> ${sudoers}
 mkdir -pv ${immu_home}/.config/autostart
 echo "[Desktop Entry]
 Encoding=UTF-8
-Version=0.9.4
+Version=0.0.0
 Type=Application
 Name=name
 Comment=Avoid suspend/hibernate from GUI
@@ -72,7 +73,7 @@ chmod +x ${immu_home}/.immu/xSetup.sh
 ${chown_immu} ${immu_home}/.immu
 echo "[Desktop Entry]
 Encoding=UTF-8
-Version=0.9.4
+Version=0.0.0
 Type=Application
 Name=name
 Comment=Secure tor surfing setup
@@ -96,7 +97,6 @@ chmod +x ${tor_browser_aur}/tor-browser.desktop
 ${chown_immu} ${immu_desktop}
 
 # Limitations
-# Custom_1[3]
 sed -i "/${immu_sudo}/d" ${sudoers}
-chsh -s /bin/false root
-# echo -e "toor\ntoor" | passwd root
+echo ${immu_sudo_ask} >> ${sudoers}
+echo -e "immu\nimmu" | passwd immu
