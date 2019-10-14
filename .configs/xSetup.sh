@@ -43,6 +43,12 @@ err()
     return $SUCCESS
 }
 
+continue_alert() {
+    echo -e
+	read -p "Press enter to continue script"
+    clear
+}
+
 contains() {
     [[ $1 =~ (^|[[:space:]])$2($|[[:space:]]) ]] && return 0 || return 1
 }
@@ -72,13 +78,26 @@ set_keymap() {
 	clear
 }
 
+passwd_immu() {
+	printf "\nUser: immu\nPassword: immu\n"
+	sudo passwd immu
+    continue_alert
+}
+
+set_time() {
+    printf "\nManually set system clock (yyyy-MM-dd hh:mm:ss): "
+	read _time
+    sudo timedatectl set-time "${_time}"
+    continue_alert
+}
+
 ask_macspoof() {
     wprintf '[+] MAC address changer:'
     printf "\n
 1. Skip spoofing
 2. Spoof MAC address\n\n"
     wprintf '[?] Make a choice: '
-    read spoof_opt
+    read -r spoof_opt
     contains "1 2" "$spoof_opt"
     if [ "$?" = "1" ]
     then
@@ -94,12 +113,15 @@ spoof_mac() {
 	then
 		printf "\nInsert network interface name: "
 		read _interface
-		macchanger -r $_interface
-		read -p "Press enter to continue"
+		sudo macchanger -r $_interface
 	fi
+	echo -e
+	read -p "Press enter to exit script"
 }
 
 ask_keymap
 set_keymap
+passwd_immu
+set_time
 ask_macspoof
 spoof_mac
