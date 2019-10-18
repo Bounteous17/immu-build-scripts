@@ -1,6 +1,7 @@
 #!/bin/bash
 slim_conf=/etc/slim.conf
-tor_browser_aur=/opt/tor-browser-aur
+tor_browser_dev_rel_path=tor-browser-dev
+tor_browser_dev=/tmp/${tor_browser_dev_rel_path}
 immu_sudo="immu ALL=(ALL) NOPASSWD:ALL"
 immu_sudo_ask="immu ALL=(ALL) ALL"
 sudoers=/etc/sudoers
@@ -8,7 +9,7 @@ chown_immu="chown -R immu:immu"
 immu_home=/home/immu
 immu_desktop=${immu_home}/Desktop
 readme_path=${immu_desktop}/README.md
-tor_desktop=${immu_desktop}/tor-browser.desktop
+tor_desktop=${immu_desktop}/tor-browser-dev.desktop
 sudo_immu="sudo -H -u immu bash -c"
 immu_xfce4_secure_dektop=${immu_home}/.config/autostart/immu-xfce4-secure.desktop
 immu_system_secure_setup=${immu_home}/.config/autostart/immu-system-secure-setup.desktop
@@ -88,12 +89,18 @@ chmod +x ${immu_system_secure_setup}
 ${chown_immu} ${immu_home}/.config
 
 # Tor browser
-${chown_immu} ${tor_browser_aur}
-cd ${tor_browser_aur}
+wget https://aur.archlinux.org/cgit/aur.git/snapshot/tor-browser-dev.tar.gz -P /tmp
+tar xvzf /tmp/tor-browser-dev.tar.gz -C /tmp
+${chown_immu} ${tor_browser_dev}
+cd ${tor_browser_dev}
+
+# Tor-browser-dev PKGBUILD patching
+sed -i "s/9.0a6/9.0a8/g" PKGBUILD
+
 ${sudo_immu} 'gpg --auto-key-locate nodefault,wkd --locate-keys torbrowser@torproject.org'
-${sudo_immu} 'makepkg -si'
-ln -s ${tor_browser_aur}/tor-browser.desktop ${tor_desktop}
-chmod +x ${tor_browser_aur}/tor-browser.desktop
+${sudo_immu} "TORBROWSER_PKGLANG='en-US' makepkg -si"
+cp -rvf /usr/share/applications/tor-browser-dev.desktop ${tor_desktop}
+chmod +x ${tor_desktop}
 ${chown_immu} ${immu_desktop}
 
 # Limitations

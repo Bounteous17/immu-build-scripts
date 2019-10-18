@@ -5,6 +5,9 @@ ipw2200-fw
 linux-hardened
 linux-hardened-headers
 macchanger
+wget
+vim
+nano
 slim
 xfce4
 xfce4-terminal

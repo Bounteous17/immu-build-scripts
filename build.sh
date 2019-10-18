@@ -17,7 +17,6 @@ gpg_key=
 verbose=""
 script_path=$(readlink -f ${0%/*})
 
-tor_aur_path=https://aur.archlinux.org/tor-browser.git
 configs_path=../.configs
 
 umask 0022
@@ -82,7 +81,6 @@ make_packages() {
 
 # Custom packages (airootfs)
 prepare_custom_packages() {
-    git clone ${tor_aur_path} ${work_dir}/x86_64/airootfs/opt/tor-browser-aur/
     cp -rvf ${configs_path}/instructions/README.md ${work_dir}/x86_64/airootfs/opt/README_INSTRUCTIONS.md
 }
 
