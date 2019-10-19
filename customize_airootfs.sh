@@ -10,6 +10,7 @@ immu_home=/home/immu
 immu_desktop=${immu_home}/Desktop
 readme_path=${immu_desktop}/README.md
 tor_desktop=${immu_desktop}/tor-browser-dev.desktop
+onionshare_desktop=${immu_desktop}/onionshare.desktop
 sudo_immu="sudo -H -u immu bash -c"
 immu_xfce4_secure_dektop=${immu_home}/.config/autostart/immu-xfce4-secure.desktop
 immu_system_secure_setup=${immu_home}/.config/autostart/immu-system-secure-setup.desktop
@@ -88,6 +89,15 @@ chmod +x ${immu_system_secure_setup}
 
 ${chown_immu} ${immu_home}/.config
 
+# Onionshare
+wget https://aur.archlinux.org/cgit/aur.git/snapshot/onionshare.tar.gz -P /tmp
+tar xvzf /tmp/onionshare.tar.gz -C /tmp
+${chown_immu} /tmp/onionshare
+cd /tmp/onionshare
+${sudo_immu} "makepkg -si"
+cp -rvf /usr/share/applications/onionshare.desktop ${onionshare_desktop}
+chmod +x ${onionshare_desktop}
+
 # Tor browser
 wget https://aur.archlinux.org/cgit/aur.git/snapshot/tor-browser-dev.tar.gz -P /tmp
 tar xvzf /tmp/tor-browser-dev.tar.gz -C /tmp
@@ -101,6 +111,7 @@ ${sudo_immu} 'gpg --auto-key-locate nodefault,wkd --locate-keys torbrowser@torpr
 ${sudo_immu} "TORBROWSER_PKGLANG='en-US' makepkg -si"
 cp -rvf /usr/share/applications/tor-browser-dev.desktop ${tor_desktop}
 chmod +x ${tor_desktop}
+
 ${chown_immu} ${immu_desktop}
 
 # Limitations
