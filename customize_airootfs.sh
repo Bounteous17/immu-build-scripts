@@ -10,10 +10,12 @@ immu_home=/home/immu
 immu_desktop=${immu_home}/Desktop
 readme_path=${immu_desktop}/README.md
 tor_desktop=${immu_desktop}/tor-browser-dev.desktop
-onionshare_desktop=${immu_desktop}/onionshare.desktop
+onionshare_desktop=${immu_desktop}/org.onionshare.OnionShare.desktop
 sudo_immu="sudo -H -u immu bash -c"
 immu_xfce4_secure_dektop=${immu_home}/.config/autostart/immu-xfce4-secure.desktop
 immu_system_secure_setup=${immu_home}/.config/autostart/immu-system-secure-setup.desktop
+url_aur_snapshots=https://aur.archlinux.org/cgit/aur.git/snapshot
+sysctl_d=/etc/sysctl.d
 
 set -e -u
 
@@ -49,7 +51,7 @@ pacman-key --init
 pacman-key --populate archlinux
 
 # Setup users
-useradd -m -s /bin/bash -G wheel,video,audio immu
+useradd -m -s /bin/bash -G video,audio immu
 mkdir -pv ${immu_desktop}
 mv -v /opt/README_INSTRUCTIONS.md ${immu_home}/Desktop/README.md
 echo "exec xfce4-session" > ${immu_home}/.xinitrc
@@ -89,17 +91,26 @@ chmod +x ${immu_system_secure_setup}
 
 ${chown_immu} ${immu_home}/.config
 
+# Python flask httpauth
+wget ${url_aur_snapshots}/python-flask-httpauth.tar.gz -P /tmp
+tar xvzf /tmp/python-flask-httpauth.tar.gz -C /tmp
+${chown_immu} /tmp/python-flask-httpauth
+cd /tmp/python-flask-httpauth
+${sudo_immu} "makepkg -si"
+
 # Onionshare
-wget https://aur.archlinux.org/cgit/aur.git/snapshot/onionshare.tar.gz -P /tmp
+wget ${url_aur_snapshots}/onionshare.tar.gz -P /tmp
 tar xvzf /tmp/onionshare.tar.gz -C /tmp
 ${chown_immu} /tmp/onionshare
 cd /tmp/onionshare
+cp PKGBUILD PKGBUILD_ORG
+sed "s/ 'python-flask-httpauth'//" PKGBUILD_ORG > PKGBUILD
 ${sudo_immu} "makepkg -si"
-cp -rvf /usr/share/applications/onionshare.desktop ${onionshare_desktop}
+cp -rvf /usr/share/applications/org.onionshare.OnionShare.desktop ${onionshare_desktop}
 chmod +x ${onionshare_desktop}
 
 # Tor browser
-wget https://aur.archlinux.org/cgit/aur.git/snapshot/tor-browser-dev.tar.gz -P /tmp
+wget ${url_aur_snapshots}/tor-browser-dev.tar.gz -P /tmp
 tar xvzf /tmp/tor-browser-dev.tar.gz -C /tmp
 ${chown_immu} ${tor_browser_dev}
 cd ${tor_browser_dev}
@@ -113,6 +124,11 @@ cp -rvf /usr/share/applications/tor-browser-dev.desktop ${tor_desktop}
 chmod +x ${tor_desktop}
 
 ${chown_immu} ${immu_desktop}
+
+# https://wiki.archlinux.org/index.php/Security#Kernel_hardening
+echo "kernel.kptr_restrict = 1" > ${sysctl_d}/51-kptr-restrict.conf
+echo "kernel.yama.ptrace_scope = 1" > ${sysctl_d}/10-ptrace.conf
+echo "kernel.kexec_loaded_disabled = 1" > ${sysctl_d}/51-kexec-restrict.conf
 
 # Limitations
 sed -i "/${immu_sudo}/d" ${sudoers}
