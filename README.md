@@ -38,6 +38,9 @@ Consider that if you use the official image of the system, your **user is added 
 The **entire file system** is mounted using **volatile** storage.
 (https://www.thegeekstuff.com/2008/11/overview-of-ramfs-and-tmpfs-on-linux/)
 
+A privacy tool that makes **keystroke biometrics** less effective. This is accomplished by **obfuscating** the time **intervals** between key press and release events, which are typically used for identification.
+(https://github.com/vmonaco/kloak)
+
 # Development
 
 ## Build ISO
@@ -58,7 +61,7 @@ and go ahead.
 
 The final Iso file will be generated within the "**out/**" directory.
 
-![Screenshot_20191009_222745](https://user-images.githubusercontent.com/16175933/66517870-37bbac00-eae4-11e9-8155-ea492750e406.png)
+![Screenshot_20191025_220943](https://user-images.githubusercontent.com/16175933/67605652-3e525080-f77f-11e9-84a6-9fad211ba66a.png)
 
 ## Get Involved
 
