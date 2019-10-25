@@ -91,6 +91,14 @@ chmod +x ${immu_system_secure_setup}
 
 ${chown_immu} ${immu_home}/.config
 
+# Kloak
+wget https://github.com/vmonaco/kloak/archive/v0.2.tar.gz -P /tmp
+tar xvzf /tmp/v0.2.tar.gz -C /tmp
+${chown_immu} /tmp/kloak-0.2
+cd /tmp/kloak-0.2
+make all
+cp -v kloak /opt/kloak
+
 # Python flask httpauth
 wget ${url_aur_snapshots}/python-flask-httpauth.tar.gz -P /tmp
 tar xvzf /tmp/python-flask-httpauth.tar.gz -C /tmp

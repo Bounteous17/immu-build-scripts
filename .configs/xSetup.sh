@@ -115,8 +115,11 @@ spoof_mac() {
 		read _interface
 		sudo macchanger -r $_interface
 	fi
-	echo -e
-	read -p "Press enter to exit script"
+	continue_alert
+}
+
+run_kloak() {
+    sudo /opt/kloak -v
 }
 
 ask_keymap
@@ -125,3 +128,4 @@ passwd_immu
 set_time
 ask_macspoof
 spoof_mac
+run_kloak
