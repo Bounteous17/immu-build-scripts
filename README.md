@@ -2,7 +2,26 @@
 
 ## Description
 
-**Immu Linux** is a **live Iso** based on <a href="https://www.archlinux.org/">Arch Linux</a> build scripts designed specifically for the security of anonymity while browsing on the Tor network.
+**Immu Linux** is a **live Iso** based on <a href="https://www.archlinux.org/">Arch Linux</a> build scripts designed specifically for the security of anonymity while browsing on the Tor network. 
+
+## How it works
+
+```
+dd if=immulinux-alpha-2019.10.25-x86_64.iso of=/dev/sdX bs=4M
+```
+
+After starting your computer from the device with the Immu Linux Iso, you will have a system with the following features:
+
+- Your system is **not** going to have the ability to **store data** on the device on which the ISO is recorded
+- You will have at your fingertips the **latest versions** of all the **software packages** that have been included and are available in the stable branch of the repositories.
+- **Basic functionalities** that may include other Linux-based systems have been **disabled** to **avoid storing evidences** in case of a forensic analysis.
+- Any type of **proprietary software** has been **ruled out** to prevent information leaks or unknown security flaws.
+- In an emergency, **simply disconnect** your device from the **power**. All the system data **was mounted in RAM**.
+- At the moment the system starts, a script is executed to configure some tracking protections, such as:
+    - <a href="https://www.archlinux.org/packages/community/x86_64/macchanger/">macchanger</a>
+    - <a href="https://github.com/vmonaco/kloak">kloak</a>
+    - <a href="https://github.com/bounteous/immu-build-scripts#tips-and-features">Read more ...</a>
+    
 
 
 ## Download and verify Iso file
