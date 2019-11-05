@@ -84,13 +84,6 @@ passwd_immu() {
     continue_alert
 }
 
-set_time() {
-    printf "\nManually set system clock (yyyy-MM-dd hh:mm:ss): "
-	read _time
-    sudo timedatectl set-time "${_time}"
-    continue_alert
-}
-
 ask_macspoof() {
     wprintf '[+] MAC address changer:'
     printf "\n
@@ -125,7 +118,6 @@ run_kloak() {
 ask_keymap
 set_keymap
 passwd_immu
-set_time
 ask_macspoof
 spoof_mac
 run_kloak
