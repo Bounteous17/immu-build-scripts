@@ -1,9 +1,7 @@
-b43-fwcutter
-broadcom-wl
-ipw2100-fw
-ipw2200-fw
 linux-hardened
 linux-hardened-headers
+linux-firmware
+ntp
 macchanger
 wget
 vim
@@ -13,6 +11,7 @@ xfce4
 xfce4-terminal
 xfce4-screenshooter
 xfce4-power-manager
+xfce4-pulseaudio-plugin
 xorg-server
 xfconf
 ark
@@ -28,4 +27,14 @@ pavucontrol
 networkmanager
 nm-connection-editor
 network-manager-applet
+brasero
+gimp
+libreoffice-fresh
+simple-scan
+audacity
+veracrypt
+gnupg
+keepassxc
 base-devel
+git
+go
