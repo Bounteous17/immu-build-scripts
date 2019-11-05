@@ -7,7 +7,7 @@
 ## How it works
 
 ```
-dd if=immulinux-alpha-2019.10.25-x86_64.iso of=/dev/sdX bs=4M
+dd if=immulinux-alpha-2019.11.05-x86_64.iso of=/dev/sdX bs=4M
 ```
 
 After starting your computer from the device with the Immu Linux Iso, you will have a system with the following features:
@@ -42,8 +42,8 @@ The objective of this live ISO is to facilitate the use to users who wish to nav
 The linux kernel image chosen by default is linux-hardened. It's a security-focused Linux kernel applying a set of hardening patches to mitigate kernel and userspace exploits. It also enables more upstream kernel hardening features than linux.
 (https://wiki.archlinux.org/index.php/Kernel#Officially_supported_kernels)
 
-The system time is set from the time that is set in the hardware of the equipment, usually from the BIOS. The **timedatectl** package is responsible for setting the date and time in the system. Be sure to **set the correct** time for your system so as not to compromise your system.
-(https://wiki.archlinux.org/index.php/System_time#Hardware_clock)
+The **ntp** package is responsible for setting the date and time in the system. Be sure to **check** if you have the **correct time** on your system so that your security cannot be affected..
+(https://wiki.archlinux.org/index.php/Network_Time_Protocol_daemon)
 
 
 During the system startup script, the <a href="https://www.archlinux.org/packages/community/x86_64/macchanger/">macchanger</a> package will be in charge of allowing us to **modify** the desired network interface **MAC address** at any time.
@@ -59,6 +59,9 @@ The **entire file system** is mounted using **volatile** storage.
 
 A privacy tool that makes **keystroke biometrics** less effective. This is accomplished by **obfuscating** the time **intervals** between key press and release events, which are typically used for identification.
 (https://github.com/vmonaco/kloak)
+
+**Metadata** are used to provide documentation for data products. In essence, metadata answer **who, what, when, where, why, and how about** every facet of the data that are being documented. To combat this, it has been proposed to include the **mat2** package.
+(https://github.com/atenart/mat2)
 
 # Development
 
