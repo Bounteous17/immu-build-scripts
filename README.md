@@ -77,11 +77,11 @@ pacman -Syyu archiso git
 git clone https://github.com/bounteous/immu-build-scripts.git
 ```
 ```
-./make.sh
+./make.sh /tmp/buildArchisoFolder /tmp/iso
 ```
 and go ahead.
 
-The final Iso file will be generated within the "**out/**" directory.
+The final Iso file will be generated within the "**/tmp/iso/**" directory.
 
 ![Screenshot_20191025_220943](https://user-images.githubusercontent.com/16175933/67605652-3e525080-f77f-11e9-84a6-9fad211ba66a.png)
 
